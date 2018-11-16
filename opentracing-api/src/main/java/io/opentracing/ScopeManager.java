@@ -16,6 +16,15 @@ package io.opentracing;
 import io.opentracing.Tracer.SpanBuilder;
 
 /**
+ *
+ * 该接口提供了将给定的span变为 活动的 span的功能以及获取当前 活动的 span/scope
+ *
+ * 在多线程环境下ScopeManager管理着各个线程的Scope，而每个线程中的Scope管理着该线程中的Span。
+ * 这样当某个线程需要获取其线程中当前 活动的 span时，可以通过ScopeManager找到对应该线程的Scope，并从Scope中取出该线程 活动的 span
+ *
+ * 具体实现 ：ThreadLocalScopeManager 等
+ *
+ *
  * The {@link ScopeManager} interface abstracts both the activation of {@link Span} instances via
  * {@link ScopeManager#activate(Span, boolean)} and access to an active {@link Span}/{@link Scope}
  * via {@link ScopeManager#active()}.
@@ -32,6 +41,11 @@ public interface ScopeManager {
      * @param finishSpanOnClose whether span should automatically be finished when {@link Scope#close()} is called
      * @return a {@link Scope} instance to control the end of the active period for the {@link Span}. It is a
      * programming error to neglect to call {@link Scope#close()} on the returned instance.
+     *
+     * span注册到scopeManager是为了用于建立span间的如parent-child之类的关系，
+     * 当方法嵌套调用 并去我们两个方法都想要进行追踪时，
+     * 将span注册到scopeManager中是必须的，否则就只能将span作为方法的参数进行传递。
+     *
      */
     Scope activate(Span span, boolean finishSpanOnClose);
 

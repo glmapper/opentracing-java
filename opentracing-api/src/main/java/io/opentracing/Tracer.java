@@ -22,16 +22,24 @@ public interface Tracer {
 
     /**
      * @return the current {@link ScopeManager}, which may be a noop but may not be null.
+     *
+     * 返回当前ScopeManager;可能返回的是null
      */
     ScopeManager scopeManager();
 
     /**
      * @return the active {@link Span}. This is a shorthand for Tracer.scopeManager().active().span(),
      * and null will be returned if {@link Scope#active()} is null.
+     *
+     * 返回一个 active 状态的 span；实际上是 Tracer.scopeManager().active().span() 的简写，可能返回的是null
      */
     Span activeSpan();
 
     /**
+     *
+     * 返回一个SpanBuilder，用来构建span，并且制定了当前 span 的 operationName
+     *
+     *
      * Return a new SpanBuilder for a Span with the given `operationName`.
      *
      * <p>You can override the operationName later via {@link Span#setOperationName(String)}.
@@ -106,6 +114,9 @@ public interface Tracer {
     <C> SpanContext extract(Format<C> format, C carrier);
 
 
+    /**
+     * 基于 builder 模式来构建 Tracer
+     */
     interface SpanBuilder {
 
         /**
@@ -171,6 +182,7 @@ public interface Tracer {
          * <p>
          * The returned {@link Scope} supports try-with-resources. For example:
          * <pre><code>
+         *     通过tracer 构造了一个spanName为 "..." 的span并将其启动与激活，且当scope close时，span也会finish。
          *     try (Scope scope = tracer.buildSpan("...").startActive(true)) {
          *         // (Do work)
          *         scope.span().setTag( ... );  // etc, etc
@@ -194,6 +206,33 @@ public interface Tracer {
          * {@code tracer.scopeManager().activate(spanBuilder.start(), finishSpanOnClose)}.
          *
          * @param finishSpanOnClose whether span should automatically be finished when {@link Scope#close()} is called
+         *         set true :在scope.close()时同时调用span.finish()，这样就会导致我们所追踪的方法catch到异常或要在catch与finally中添加tag变得不可能，
+         *                   因为在scope.close()后我们已经无法获取到那个包裹着我们所需要的span的scope了，也就无法通过scope获取到span。
+         *
+         *         set false:导致由于无法获取到当时的scope而无法获取到想要的span的情况
+         *                   如果我们设置为false，那个span是没有finish的，而我们又无法获取到当时的span了，
+         *                   所以除非我们在try语句中手动的设置scope.span.finish()，否则span永远没有finish。
+         *
+         *
+         *
+         *          opentracing推荐的方式是start一个span后，在需要的时候active激活它，也就是注册到scopeManager中
+         *              Span span = tracer.buildSpan("someWork").start();
+         *              try (Scope scope = tracer.scopeManager().activate(span, false)) {
+         *                 // Do things.
+         *              } catch(Exception ex) {
+         *                 Tags.ERROR.set(span, true);
+         *                 span.log(Map.of(Fields.EVENT, "error", Fields.ERROR_OBJECT, ex, Fields.MESSAGE, ex.getMessage()));
+         *              } finally {
+         *                 // 手动finish
+         *                 span.finish();
+         *              }
+         *
+         *
+         *          这里可以想到的是，如果finishSpanOnClose不设置为false。
+         *          则会在 try 块中 finish span ，那么这样一来就会造成我们在后面的catch 或者 finally块中无法在对这个span进行操作了，因为scope#close时，span#finish了
+         *
+         *
+         *
          * @return a {@link Scope}, already registered via the {@link ScopeManager}
          *
          * @see ScopeManager

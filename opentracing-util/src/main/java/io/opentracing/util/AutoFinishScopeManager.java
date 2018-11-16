@@ -18,6 +18,9 @@ import io.opentracing.Span;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * 与 ThreadLocalScopeManager 类似，只是可以自动finish span
+ */
 public class AutoFinishScopeManager implements ScopeManager {
     final ThreadLocal<AutoFinishScope> tlsScope = new ThreadLocal<AutoFinishScope>();
 

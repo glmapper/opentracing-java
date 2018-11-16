@@ -20,6 +20,8 @@ import io.opentracing.Span;
 /**
  * A simple {@link ScopeManager} implementation built on top of Java's thread-local storage primitive.
  *
+ * 使用ThreadLocal<ThreadLocalScope>来存储不同线程的scope对象，在多线程环境下可以通过获取到当前线程的scope来获取当前线程的活动的 span。
+ *
  * @see ThreadLocalScope
  */
 public class ThreadLocalScopeManager implements ScopeManager {
@@ -27,6 +29,7 @@ public class ThreadLocalScopeManager implements ScopeManager {
 
     @Override
     public Scope activate(Span span, boolean finishOnClose) {
+        // 调用 ThreadLocalScope 的构造方法，将传入的span激活为当前活动的 span
         return new ThreadLocalScope(this, span, finishOnClose);
     }
 

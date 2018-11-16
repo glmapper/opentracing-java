@@ -140,6 +140,11 @@ public interface Span {
     Span setOperationName(String operationName);
 
     /**
+     *
+     * 调用span.finish()方法标志着span的结束，finish方法应该是对应span实例的最后一个调用的方法。
+     * 在span中finish方法还只是校验和记录的作用，真正发送span的就是开头提到的tracer，tracer包含了sampler、report等全局的功能
+     * 因此通常会在finish中调用了tracer.report(span)方法
+     *
      * Sets the end timestamp to now and records the span.
      *
      * <p>With the exception of calls to {@link #context}, this should be the last call made to the span instance.
