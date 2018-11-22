@@ -18,6 +18,8 @@ import java.util.Map;
 /**
  * {@link Span} represents the OpenTracing specification's Span contract.
  *
+ * 表示 OpenTracing 中的 span 规范
+ *
  * @see Scope
  * @see ScopeManager
  * @see Tracer.SpanBuilder#start()
@@ -25,10 +27,11 @@ import java.util.Map;
  */
 public interface Span {
     /**
-     * Retrieve the associated SpanContext.
+     * Retrieve(检索/获取) the associated(相关的) SpanContext.
      *
      * This may be called at any time, including after calls to finish().
      *
+     * 这个方法可以在任何时候调用，包括在调用了 Span#finish()的时候
      * @return the SpanContext that encapsulates Span state that should propagate across process boundaries.
      */
     SpanContext context();
@@ -45,12 +48,13 @@ public interface Span {
     Span setTag(String key, Number value);
 
     /**
-     * Log key:value pairs to the Span with the current walltime timestamp.
+     * Log key:value pairs to the Span with the current walltime(全时工作的) timestamp.
      *
      * <p><strong>CAUTIONARY NOTE:</strong> not all Tracer implementations support key:value log fields end-to-end.
-     * Caveat emptor.
+     * 并不是所有的Tracer实现都支持 key:value 的 端到端 日志字段
+     * Caveat emptor(概不退货、买者自负、完全保障).
      *
-     * <p>A contrived example (using Guava, which is not required):
+     * <p>A contrived(人为的) example (using Guava, which is not required):
      * <pre><code>
      span.log(
      ImmutableMap.Builder<String, Object>()
@@ -119,9 +123,12 @@ public interface Span {
      * carried along the full path of request execution throughout the system.
      *
      * Note 1: Baggage is only propagated to the future (recursive) children of this SpanContext.
+     *         Baggage 只传播到此SpanContext的未来（递归）子节点。
      *
      * Note 2: Baggage is sent in-band with every subsequent local and remote calls, so this feature must be used with
      * care.
+     *
+     * Baggage 将在每次后续本地和远程 calls（调用时） 时发送，因此必须小心使用此功能。
      *
      * @return this Span instance, for chaining
      */
@@ -136,6 +143,8 @@ public interface Span {
      * Sets the string name for the logical operation this span represents.
      *
      * @return this Span instance, for chaining
+     *
+     * 设置此span表示的逻辑运算的字符串名称。
      */
     Span setOperationName(String operationName);
 
@@ -156,6 +165,8 @@ public interface Span {
     void finish();
 
     /**
+     *
+     * 这里和上面的finish一样，只是指定了结束的时间。上面的方法中以当前时间作为结束时间
      * Sets an explicit end timestamp and records the span.
      *
      * <p>With the exception of calls to Span.context(), this should be the last call made to the span instance, and to

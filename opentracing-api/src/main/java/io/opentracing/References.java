@@ -15,8 +15,11 @@ package io.opentracing;
 
 /**
  * References is essentially a namespace for the official OpenTracing reference types.
+ * References 本质上是官方 OpenTracing reference 类型的 namespace。
  *
  * References are used by Tracer.buildSpan() to describe the relationships between Spans.
+ *
+ * Tracer.buildSpan()使用引用来描述 Spans 之间的关系。
  *
  * @see Tracer.SpanBuilder#addReference(String, SpanContext)
  */

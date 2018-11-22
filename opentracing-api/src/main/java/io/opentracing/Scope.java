@@ -16,12 +16,14 @@ package io.opentracing;
 import java.io.Closeable;
 
 /**
- * A {@link Scope} formalizes the activation and deactivation of a {@link Span}, usually from a CPU standpoint.
+ * A {@link Scope} formalizes(正式、规范) the activation and deactivation of a {@link Span}, usually from a CPU standpoint(立场；观点).
+ *
+ * {@link Scope} 通常从CPU的角度来规范{@link Span}的激活和停用。
  *
  * <p>
- * Many times a {@link Span} will be extant (in that {@link Span#finish()} has not been called) despite being in a
- * non-runnable state from a CPU/scheduler standpoint. For instance, a {@link Span} representing the client side of an
- * RPC will be unfinished but blocked on IO while the RPC is still outstanding. A {@link Scope} defines when a given
+ * Many times a {@link Span} will be extant(显著的) (in that {@link Span#finish()} has not been called) despite(尽管) being in a
+ * non-runnable state from a CPU/scheduler standpoint. For instance, a {@link Span} representing(表示) the client side of an
+ * RPC will be unfinished but blocked on IO while the RPC is still outstanding(出色的，未解决的,显著地). A {@link Scope} defines when a given
  * {@link Span} <em>is</em> scheduled and on the path.
  */
 public interface Scope extends Closeable {
@@ -29,15 +31,22 @@ public interface Scope extends Closeable {
      * Mark the end of the active period for the current thread and {@link Scope},
      * updating the {@link ScopeManager#active()} in the process.
      *
+     * 标记 当前线程和Scope的活动周期结束，更新进程中的{@link ScopeManager＃active（）}。
+     *
      * <p>
      * NOTE: Calling {@link #close} more than once on a single {@link Scope} instance leads to undefined
      * behavior.
+     *
+     * 在单个{@link Scope}实例上多次调用{@link #close}会导致未定义的行为。
+     *
      */
     @Override
     void close();
 
     /**
      * @return the {@link Span} that's been scoped by this {@link Scope}
+     *
+     * 由{@link Scope}限定的{@link Span}
      */
     Span span();
 }
