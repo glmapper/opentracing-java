@@ -58,6 +58,11 @@ import java.util.concurrent.Callable;
  * 也就是说，本身静态配置的软件包（例如，JDBC驱动程序）的工具可能无法利用所述DI机制进行Tracer访问，因此它们应该回退到GlobalTracer上。
  * 总的来说，OpenTracing instrumentation 应始终允许程序员去指定Tracer 实例 用于检测，尽管GlobalTracer是合理的回退或默认值（NoopTracer）。
  *
+ *
+ * 这个设计点在目前版本（2.3.0及以前）的 SOFATracer 是没法使用的。具体可参考下我之前写的 <a href="https://juejin.im/post/5c0a847b6fb9a04a07302f2d">SOFATracer 插件埋点机制详解</a>这篇文章中的介绍。
+ *
+ * 但是对于基于 OT-API 埋点的实现方式就完全可以适应。相关原理同样可以参考上面的那篇文章。
+ *
  */
 public final class GlobalTracer implements Tracer {
 

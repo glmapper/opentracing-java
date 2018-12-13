@@ -17,13 +17,15 @@ import io.opentracing.propagation.Format;
 
 /**
  * Tracer is a simple, thin interface for Span creation and propagation across arbitrary transports.
+ *
+ * 一个 Tracer 就代表一条链路
  */
 public interface Tracer {
 
     /**
      * @return the current {@link ScopeManager}, which may be a noop but may not be null.
      *
-     * 返回当前ScopeManager;可能返回的是null
+     * 返回当前ScopeManager;可能返回的是null。
      */
     ScopeManager scopeManager();
 

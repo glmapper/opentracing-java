@@ -22,7 +22,10 @@ import java.nio.ByteBuffer;
  * Format instances control the behavior of Tracer.inject and Tracer.extract (and also constrain the type of the
  * carrier parameter to same).
  *
+ * 对Tracer.inject 和 Tracer.extract 中的数据进行格式化控制的类，并将载体参数的类型约束为相同
+ *
  * Most OpenTracing users will only reference the Format.Builtin constants. For example:
+ * 大多数 OpenTracing 用户只会引用Format.Builtin常量，例如
  *
  * <pre><code>
  * Tracer tracer = ...
@@ -30,10 +33,15 @@ import java.nio.ByteBuffer;
  * SpanContext spanCtx = tracer.extract(Format.Builtin.HTTP_HEADERS, httpCarrier);
  * </code></pre>
  *
+ *
+ * Tracer.inject 和 Tracer.extract操作实际上就是将 SpanContext 注入到具体的载体中，SpanContext所具有的状态信息可以以 String/StringMap(对应TEXT_MAP)、HTTP报头兼容(HTTP_HEADERS)
+ * ,无约束二进制(BINARY) 等多种方式 encoding ，然后进行载入或者提取。
+ *
  * @see Tracer#inject(SpanContext, Format, Object)
  * @see Tracer#extract(Format, Object)
  */
 public interface Format<C> {
+
     final class Builtin<C> implements Format<C> {
         private final String name;
 
@@ -45,7 +53,9 @@ public interface Format<C> {
          * The TEXT_MAP format allows for arbitrary String-&gt;String map encoding of SpanContext state for
          * Tracer.inject and Tracer.extract.
          *
-         * Unlike HTTP_HEADERS, the builtin TEXT_MAP format expresses no constraints on keys or values.
+         * Unlike HTTP_HEADERS, the builtin TEXT_MAP format expresses(表示) no constraints(约束) on keys or values.
+         *
+         * TEXT_MAP 字符串类型
          *
          * @see io.opentracing.Tracer#inject(SpanContext, Format, Object)
          * @see io.opentracing.Tracer#extract(Format, Object)
@@ -55,11 +65,13 @@ public interface Format<C> {
         public final static Format<TextMap> TEXT_MAP = new Builtin<TextMap>("TEXT_MAP");
 
         /**
-         * The HTTP_HEADERS format allows for HTTP-header-compatible String-&gt;String map encoding of SpanContext state
+         * The HTTP_HEADERS format allows for HTTP-header-compatible(HTTP报头兼容) String-&gt;String map encoding of SpanContext state
          * for Tracer.inject and Tracer.extract.
          *
          * I.e., keys written to the TextMap MUST be suitable for HTTP header keys (which are poorly defined but
          * certainly restricted); and similarly for values (i.e., URL-escaped and "not too long").
+         *
+         * httpHeader 形式
          *
          * @see io.opentracing.Tracer#inject(SpanContext, Format, Object)
          * @see io.opentracing.Tracer#extract(Format, Object)
@@ -71,6 +83,8 @@ public interface Format<C> {
         /**
          * The BINARY format allows for unconstrained binary encoding of SpanContext state for Tracer.inject and
          * Tracer.extract.
+         *
+         * 二进制形式
          *
          * @see io.opentracing.Tracer#inject(SpanContext, Format, Object)
          * @see io.opentracing.Tracer#extract(Format, Object)

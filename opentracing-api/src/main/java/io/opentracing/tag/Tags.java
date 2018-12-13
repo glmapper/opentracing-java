@@ -15,8 +15,12 @@ package io.opentracing.tag;
 
 /**
  * The following span tags are recommended for instrumentors who are trying to capture more
- * semantic information about the spans. Tracers may expose additional features based on these
+ * semantic(语义) information about the spans. Tracers may expose additional features based on these
  * standardized data points. Tag names follow a general structure of namespacing.
+ *
+ * 这里简单说下和logs的区别：
+ * 1、Tags，没有时间的概念，不关乎在哪个事件节点发生。只管往 span里面set就可以，通常会放一些当前span中一些属性信息，比如对于 一个MVC 产生的span，tag里面通常会放请求的url,method,请求大小，响应大小，响应的statueCode，当前span的类型等
+ * 2、logs，参考Filed中的解释，logs是记录具体在这个span生命周期中某个时间点发生的事件，具有时序性
  *
  * @see <a href="https://github.com/opentracing/specification/blob/master/semantic_conventions.md">https://github.com/opentracing/specification/blob/master/semantic_conventions.md</a>
  */

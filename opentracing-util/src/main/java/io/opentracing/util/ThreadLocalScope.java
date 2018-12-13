@@ -21,7 +21,7 @@ import io.opentracing.Span;
  * {@link ThreadLocalScope} is a simple {@link Scope} implementation that relies on Java's
  * thread-local storage primitive.
  *
- * ThreadLocalScope管理着单个线程中的所有的span
+ * ThreadLocalScope 管理着单个线程中的所有的span
  *
  * 当前线程中的 ThreadLocalScope 管理着当前线程所有曾被激活还未释放的span
  *

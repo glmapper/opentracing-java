@@ -28,6 +28,10 @@ import java.util.Map;
  * 2/任何特定于Tracer实现的字段，用于标识或以其他方式关联Span实例,例如trace_id、span_id、sampled等
  *
  *
+ * SpanContext 用于跨线程传播的，一条tracer链路中，不同的span可以由不同的线程产生。那么在这个过程中肯定是需要有这种一个东西能够实现跨线程甚至进程进行传输的。
+ * SpanContext 就干了这个事情，SpanContext 中携带了tracerId、sampled 等全局数据，为链路构建提供了基础。
+ *
+ *
  * @see Span#setBaggageItem(String, String)
  * @see Span#getBaggageItem(String)
  */

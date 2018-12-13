@@ -22,6 +22,8 @@ import java.util.Map;
  * TextMap is a built-in carrier for Tracer.inject() and Tracer.extract(). TextMap implementations allows Tracers to
  * read and write key:value String pairs from arbitrary underlying sources of data.
  *
+ * TextMap 是Tracer.inject() 和 Tracer.extract() 内置的载体，TextMap实现允许Tracers从任意底层数据源读取和写入key：value String对。
+ *
  * @see io.opentracing.Tracer#inject(SpanContext, Format, Object)
  * @see io.opentracing.Tracer#extract(Format, Object)
  */

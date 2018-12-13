@@ -19,10 +19,12 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * A TextMap carrier for use with Tracer.extract() ONLY (it has no mutating methods).
+ * A TextMap carrier for use with Tracer.extract() ONLY (it has no mutating(重载、变异) methods).
  *
- * Note that the TextMap interface can be made to wrap around arbitrary data types (not just Map&lt;String, String&gt;
- * as illustrated here).
+ * Note that the TextMap interface can be made to wrap around arbitrary(任意) data types (not just Map&lt;String, String&gt;
+ * as illustrated here(这里说明)).
+ *
+ * 只能提取，不能注入
  *
  * @see Tracer#extract(Format, Object)
  */

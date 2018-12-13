@@ -25,6 +25,8 @@ import java.util.Map;
  * Note that the TextMap interface can be made to wrap around arbitrary data types (not just Map&lt;String, String&gt;
  * as illustrated here).
  *
+ * 只能注入不能提取
+ *
  * @see Tracer#inject(SpanContext, Format, Object)
  */
 public final class TextMapInjectAdapter implements TextMap {
