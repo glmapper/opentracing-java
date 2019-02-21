@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 The OpenTracing Authors
+ * Copyright 2016-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -16,6 +16,7 @@ package io.opentracing.util;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.noop.NoopSpanBuilder;
+import io.opentracing.noop.NoopTracerFactory;
 import io.opentracing.propagation.Format;
 import org.junit.After;
 import org.junit.Before;
@@ -146,6 +147,14 @@ public class GlobalTracerTest {
     public void testNoopTracerByDefault() {
         Tracer.SpanBuilder spanBuilder = GlobalTracer.get().buildSpan("my-operation");
         assertThat(spanBuilder, is(instanceOf(NoopSpanBuilder.class)));
+    }
+
+    @Test
+    public void Registering_NoopTracer_indicates_tracer_has_been_registered()
+    {
+        assertThat(GlobalTracer.isRegistered(), is(false));
+        GlobalTracer.registerIfAbsent(provide(NoopTracerFactory.create()));
+        assertThat(GlobalTracer.isRegistered(), is(true));
     }
 
     @Test

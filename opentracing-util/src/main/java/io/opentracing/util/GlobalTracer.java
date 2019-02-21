@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 The OpenTracing Authors
+ * Copyright 2016-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -65,6 +65,8 @@ public final class GlobalTracer implements Tracer {
      */
     private static volatile Tracer tracer = NoopTracerFactory.create();
 
+    private static volatile boolean isRegistered = false;
+
     private GlobalTracer() {
     }
 
@@ -92,9 +94,7 @@ public final class GlobalTracer implements Tracer {
      *
      * @return Whether a tracer has been registered
      */
-    public static synchronized boolean isRegistered() {
-        return !(GlobalTracer.tracer instanceof NoopTracer);
-    }
+    public static synchronized boolean isRegistered() { return isRegistered; }
 
     /**
      * Register a {@link Tracer} to back the behaviour of the {@link #get() global tracer}.
@@ -120,6 +120,7 @@ public final class GlobalTracer implements Tracer {
                 final Tracer suppliedTracer = requireNonNull(provider.call(), "Cannot register GlobalTracer <null>.");
                 if (!(suppliedTracer instanceof GlobalTracer)) {
                     GlobalTracer.tracer = suppliedTracer;
+                    isRegistered = true;
                     return true;
                 }
             } catch (RuntimeException rte) {
