@@ -17,9 +17,7 @@ import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
-
-import java.util.Collections;
-import java.util.Map;
+import io.opentracing.tag.Tag;
 
 public interface NoopSpanBuilder extends Tracer.SpanBuilder {
     NoopSpanBuilder INSTANCE = new NoopSpanBuilderImpl();
@@ -61,22 +59,17 @@ final class NoopSpanBuilderImpl implements NoopSpanBuilder {
     }
 
     @Override
+    public <T> Tracer.SpanBuilder withTag(Tag<T> key, T value) {
+        return this;
+    }
+
+    @Override
     public Tracer.SpanBuilder withStartTimestamp(long microseconds) {
         return this;
     }
 
     @Override
-    public Scope startActive(boolean finishOnClose) {
-        return NoopScopeManager.NoopScope.INSTANCE;
-    }
-
-    @Override
     public Span start() {
-        return startManual();
-    }
-
-    @Override
-    public Span startManual() {
         return NoopSpanImpl.INSTANCE;
     }
 

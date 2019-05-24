@@ -14,14 +14,16 @@
 package io.opentracing.testbed.multiple_callbacks;
 
 import io.opentracing.Scope;
-import io.opentracing.util.AutoFinishScopeManager;
+import io.opentracing.Span;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.mock.MockTracer.Propagator;
+import io.opentracing.testbed.AutoFinishScopeManager;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
 
 import static io.opentracing.testbed.TestUtils.finishedSpansSize;
 import static org.awaitility.Awaitility.await;
@@ -37,7 +39,8 @@ public class MultipleCallbacksTest {
     @Test
     public void test() throws Exception {
         Client client = new Client(tracer);
-        try (Scope scope = tracer.buildSpan("parent").startActive(false)) {
+        Span span = tracer.buildSpan("parent").start();
+        try (Scope scope = tracer.activateSpan(span)) {
             client.send("task1", 300);
             client.send("task2", 200);
             client.send("task3", 100);
@@ -56,6 +59,6 @@ public class MultipleCallbacksTest {
             assertEquals(parentSpan.context().spanId(), spans.get(i).parentId());
         }
 
-        assertNull(tracer.scopeManager().active());
+        assertNull(tracer.scopeManager().activeSpan());
     }
 }

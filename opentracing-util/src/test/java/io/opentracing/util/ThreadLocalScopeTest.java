@@ -38,42 +38,40 @@ public class ThreadLocalScopeTest {
         Span backgroundSpan = mock(Span.class);
         Span foregroundSpan = mock(Span.class);
 
-        // Quasi try-with-resources (this is 1.6).
-        Scope backgroundActive = scopeManager.activate(backgroundSpan, true);
+        Scope backgroundActive = scopeManager.activate(backgroundSpan);
         try {
             assertNotNull(backgroundActive);
+            assertEquals(scopeManager.activeSpan(), backgroundSpan);
 
             // Activate a new Scope on top of the background one.
-            Scope foregroundActive = scopeManager.activate(foregroundSpan, true);
+            Scope foregroundActive = scopeManager.activate(foregroundSpan);
             try {
-                Scope shouldBeForeground = scopeManager.active();
-                assertEquals(foregroundActive, shouldBeForeground);
+                assertNotNull(foregroundActive);
+                assertEquals(scopeManager.activeSpan(), foregroundSpan);
             } finally {
-                foregroundActive.close();
+              foregroundActive.close();
             }
 
             // And now the backgroundActive should be reinstated.
-            Scope shouldBeBackground = scopeManager.active();
-            assertEquals(backgroundActive, shouldBeBackground);
+            assertEquals(scopeManager.activeSpan(), backgroundSpan);
         } finally {
             backgroundActive.close();
         }
 
-        // The background and foreground Spans should be finished.
-        verify(backgroundSpan, times(1)).finish();
-        verify(foregroundSpan, times(1)).finish();
+        // The background and foreground Spans should NOT be finished.
+        verify(backgroundSpan, times(0)).finish();
+        verify(foregroundSpan, times(0)).finish();
 
         // And now nothing is active.
-        Scope missingSpan = scopeManager.active();
-        assertNull(missingSpan);
+        assertNull(scopeManager.activeSpan());
     }
 
     @Test
     public void testDeactivateWhenDifferentSpanIsActive() {
         Span span = mock(Span.class);
 
-        Scope active = scopeManager.activate(span, false);
-        scopeManager.activate(mock(Span.class), false);
+        Scope active = scopeManager.activate(span);
+        scopeManager.activate(mock(Span.class));
         active.close();
 
         verify(span, times(0)).finish();

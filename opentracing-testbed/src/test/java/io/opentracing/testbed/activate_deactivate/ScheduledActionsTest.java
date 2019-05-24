@@ -14,8 +14,7 @@
 package io.opentracing.testbed.activate_deactivate;
 
 import io.opentracing.Scope;
-import io.opentracing.util.AutoFinishScope;
-import io.opentracing.util.AutoFinishScopeManager;
+import io.opentracing.Span;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.mock.MockTracer.Propagator;
@@ -28,6 +27,9 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import io.opentracing.testbed.AutoFinishScope;
+import io.opentracing.testbed.AutoFinishScopeManager;
 
 import static io.opentracing.testbed.TestUtils.finishedSpansSize;
 import static org.awaitility.Awaitility.await;
@@ -89,7 +91,8 @@ public class ScheduledActionsTest {
             @Override
             public void run() {
                 logger.info("Entry thread started");
-                try (Scope scope = tracer.buildSpan("parent").startActive(false)) {
+                Span span = tracer.buildSpan("parent").start();
+                try (Scope scope = tracer.activateSpan(span)) {
                     Runnable action = new RunnableAction((AutoFinishScope)scope);
 
                     // Action is executed at some time and we are not able to check status
@@ -108,7 +111,8 @@ public class ScheduledActionsTest {
             @Override
             public void run() {
                 logger.info("Entry thread 2x started");
-                try (Scope scope = tracer.buildSpan("parent").startActive(false)) {
+                Span span = tracer.buildSpan("parent").start();
+                try (Scope scope = tracer.activateSpan(span)) {
                     Runnable action = new RunnableAction((AutoFinishScope)scope);
                     Runnable action2 = new RunnableAction((AutoFinishScope)scope);
 
